@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "version": "1.0",
+  "name": "Hypeddit Bypass",
+  "description": "bypass hypeddit",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.hypeddit.com/*",
+        "*://*.hypeddit-gates-prod.s3.amazonaws.com/*"
+      ],
+      "js": ["main.js"]
+    }
+  ]
+}
