@@ -19,15 +19,22 @@ function init () {
 }
 
 function routeToDownloadPage () {
-    const entry = performance.getEntriesByType("resource").find(entry => (
-        entry.name.startsWith("https://hypeddit-gates-prod.s3.amazonaws.com/") &&
-        entry.name.match(/https:\/\/hypeddit-gates-prod\.s3\.amazonaws\.com\/([^_]+)/)[1]
-    ));
-    if (!entry) {
-        window.alert("can't find entry");
-        return;
-    }
+    const getEntryInterval = setInterval(getEntry, 100);
+    const getEntryTimeout = setTimeout(() => {
+        clearInterval(getEntryInterval);
+        window.alert("could not find entry id");
+    }, 10000);
 
-    const id = entry.name.match(/https:\/\/hypeddit-gates-prod\.s3\.amazonaws\.com\/([^_]+)/)[1];
-    window.location = `https://hypeddit-gates-prod.s3.amazonaws.com/${id}_main`;
+    function getEntry () {
+        const entry = performance.getEntriesByType("resource").find(entry => (
+            entry.name.startsWith("https://hypeddit-gates-prod.s3.amazonaws.com/") &&
+            entry.name.match(/https:\/\/hypeddit-gates-prod\.s3\.amazonaws\.com\/([^_]+)/)[1]
+        ));
+        if (entry) {
+            clearTimeout(getEntryTimeout);
+            clearInterval(getEntryInterval);
+            const id = entry.name.match(/https:\/\/hypeddit-gates-prod\.s3\.amazonaws\.com\/([^_]+)/)[1];
+            window.location = `https://hypeddit-gates-prod.s3.amazonaws.com/${id}_main`;
+        }
+    }
 }
